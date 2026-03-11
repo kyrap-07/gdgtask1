@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -159,23 +160,23 @@ left:20px;
 
 <div class="board">
 
-<div class="column" id="todo" ondragover="allowDrop(event)" ondrop="drop(event)">
+<div class="column" id="todo" ondragover="enableDrop(event)" ondrop="handleDrop(event)">
 <h3>TO DO</h3>
 </div>
 
-<div class="column" id="upnext" ondragover="allowDrop(event)" ondrop="drop(event)">
+<div class="column" id="upnext" ondragover="enableDrop(event)" ondrop="handleDrop(event)">
 <h3>UP NEXT</h3>
 </div>
 
-<div class="column" id="progress" ondragover="allowDrop(event)" ondrop="drop(event)">
+<div class="column" id="progress" ondragover="enableDrop(event)" ondrop="handleDrop(event)">
 <h3>IN PROGRESS</h3>
 </div>
 
-<div class="column" id="review" ondragover="allowDrop(event)" ondrop="drop(event)">
+<div class="column" id="review" ondragover="enableDrop(event)" ondrop="handleDrop(event)">
 <h3>IN REVIEW</h3>
 </div>
 
-<div class="column" id="complete" ondragover="allowDrop(event)" ondrop="drop(event)">
+<div class="column" id="complete" ondragover="enableDrop(event)" ondrop="handleDrop(event)">
 <h3>COMPLETE</h3>
 </div>
 
@@ -248,7 +249,6 @@ input.value="";
 }
 
 
-
 function removeTask(id){
 
 document.getElementById(id).remove();
@@ -258,8 +258,7 @@ saveBoard();
 }
 
 
-
-function allowDrop(ev){
+function enableDrop(ev){
 ev.preventDefault();
 }
 
@@ -267,7 +266,7 @@ function drag(ev){
 ev.dataTransfer.setData("text",ev.target.id);
 }
 
-function drop(ev){
+function handleDrop(ev){
 
 ev.preventDefault();
 
