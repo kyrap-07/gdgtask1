@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +13,7 @@ text-align:center;
 background:linear-gradient(120deg,#a8edea,#fed6e3);
 }
 
-/* TITLE */
+
 
 h1{
 letter-spacing:8px;
@@ -22,7 +21,7 @@ margin-top:40px;
 color:#5d5d81;
 }
 
-/* INPUT AREA */
+
 
 .controls{
 margin:25px;
@@ -50,7 +49,7 @@ button:hover{
 background:#584ff2;
 }
 
-/* BOARD */
+
 
 .board{
 display:flex;
@@ -61,7 +60,7 @@ position:relative;
 z-index:5;
 }
 
-/* COLUMNS */
+
 
 .column{
 width:200px;
@@ -85,7 +84,7 @@ transform:translateY(-3px);
 color:#5d5d81;
 }
 
-/* CARDS */
+
 
 .card{
 background:white;
@@ -111,7 +110,7 @@ cursor:pointer;
 text-decoration:underline;
 }
 
-/* BIG ICONS */
+
 
 .icon{
 position:fixed;
@@ -206,7 +205,7 @@ saveBoard();
 
 }
 
-/* ADD TASK */
+
 
 function addTask(){
 
@@ -220,7 +219,7 @@ input.value="";
 
 }
 
-/* BRAINSTORM */
+
 
 function addBrainstorm(){
 
@@ -234,7 +233,7 @@ input.value="";
 
 }
 
-/* PLAN */
+
 
 function addPlan(){
 
@@ -248,7 +247,7 @@ input.value="";
 
 }
 
-/* REMOVE */
+
 
 function removeTask(id){
 
@@ -258,7 +257,7 @@ saveBoard();
 
 }
 
-/* DRAG */
+
 
 function allowDrop(ev){
 ev.preventDefault();
@@ -287,7 +286,7 @@ saveBoard();
 
 }
 
-/* SAVE BOARD */
+
 
 function saveBoard(){
 
@@ -313,7 +312,7 @@ localStorage.setItem("kanbanData",JSON.stringify(data));
 
 }
 
-/* LOAD BOARD */
+
 
 function loadBoard(){
 
