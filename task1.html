@@ -1,275 +1,342 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GDG on campus SRM - Pastel Kanban</title>
+<title>Kanban Board</title>
 
 <style>
 
-:root {
-    --bg-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    --column-bg: rgba(255, 255, 255, 0.45);
-    --text-color: #5d5d81;
-    --card-shadow: 0 4px 10px rgba(0,0,0,0.05);
+body{
+font-family: "JetBrains Mono", monospace;
+margin:0;
+padding:0;
+text-align:center;
+background:linear-gradient(120deg,#a8edea,#fed6e3);
 }
 
-body {
-    background: var(--bg-gradient);
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* TITLE */
+
+h1{
+letter-spacing:8px;
+margin-top:40px;
+color:#5d5d81;
 }
 
-.decor { position: absolute; z-index: -1; pointer-events: none; }
-.rocket { top: 20px; right: 20px; font-size: 60px; transform: rotate(-15deg); }
-.blob-pink { top: -20px; left: -20px; font-size: 100px; opacity: 0.6; }
-.blob-orange { bottom: 20px; left: 20px; font-size: 80px; opacity: 0.5; }
+/* INPUT AREA */
 
-.header {
-    text-align: center;
-    margin-top: 40px;
-    color: var(--text-color);
+.controls{
+margin:25px;
 }
 
-.header h1 {
-    letter-spacing: 8px;
-    font-size: 2.5rem;
+input{
+padding:12px;
+width:260px;
+border-radius:20px;
+border:none;
+outline:none;
 }
 
-.input-area {
-    margin-bottom: 30px;
-    display: flex;
-    gap: 10px;
+button{
+padding:10px 18px;
+margin-left:8px;
+border:none;
+border-radius:20px;
+background:#6c63ff;
+color:white;
+cursor:pointer;
 }
 
-input {
-    padding: 12px;
-    border-radius: 25px;
-    border: 1px solid white;
-    width: 250px;
+button:hover{
+background:#584ff2;
 }
 
-.add-btn {
-    background: #6c5ce7;
-    color: white;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 25px;
-    cursor: pointer;
+/* BOARD */
+
+.board{
+display:flex;
+justify-content:center;
+gap:20px;
+padding:30px;
+position:relative;
+z-index:5;
 }
 
-.board {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    width: 85%;
-    padding: 20px;
-    flex-wrap: wrap;
+/* COLUMNS */
+
+.column{
+width:200px;
+min-height:350px;
+padding:15px;
+border-radius:18px;
+background:rgba(255,255,255,0.45);
+backdrop-filter:blur(8px);
+border:2px solid rgba(255,255,255,0.4);
+box-shadow:0 6px 15px rgba(0,0,0,0.08);
+transition:all 0.3s ease;
 }
 
-.column {
-    background: var(--column-bg);
-    backdrop-filter: blur(8px);
-    border: 2px solid rgba(255,255,255,0.7);
-    border-radius: 20px;
-    width: 250px;
-    min-height: 420px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
+.column:hover{
+box-shadow:0 0 20px rgba(140,120,255,0.7);
+border-color:#8a7cff;
+transform:translateY(-3px);
 }
 
-.column h2 {
-    text-align: center;
-    color: var(--text-color);
+.column h3{
+color:#5d5d81;
 }
 
-.card {
-    background: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 12px;
-    box-shadow: var(--card-shadow);
-    cursor: grab;
-    border-left: 6px solid #a29bfe;
-}
-.card:hover{
-    transform: translateY(-3px);
-    transition: 0.2s ease;
+/* CARDS */
+
+.card{
+background:white;
+padding:10px;
+margin:10px 0;
+border-radius:10px;
+cursor:grab;
+box-shadow:0 2px 6px rgba(0,0,0,0.15);
 }
 
-.card-text {
-    outline: none;
-    display: block;
-    margin-bottom: 10px;
+.card-text{
+display:block;
+margin-bottom:6px;
 }
 
-.remove-btn {
-    color: #ff7675;
-    font-size: 0.8rem;
-    cursor: pointer;
-    border: none;
-    background: none;
+.remove{
+color:#ff5c5c;
+font-size:12px;
+cursor:pointer;
+}
+
+.remove:hover{
+text-decoration:underline;
+}
+
+/* BIG ICONS */
+
+.icon{
+position:fixed;
+font-size:90px;
+opacity:0.6;
+pointer-events:none;
+}
+
+.palette{
+top:20px;
+left:20px;
+}
+
+.rocket{
+top:20px;
+right:20px;
+}
+
+.plant{
+bottom:20px;
+left:20px;
 }
 
 </style>
 </head>
 
+
 <body>
 
-<div class="decor rocket">🚀</div>
-<div class="decor blob-pink">🎨</div>
-<div class="decor blob-orange">🌪️</div>
+<div class="icon palette">🎨</div>
+<div class="icon rocket">🚀</div>
+<div class="icon plant">🪴</div>
 
-<div class="header">
 <h1>KANBAN BOARD</h1>
 
-<div class="input-area">
-<input type="text" id="taskInput" placeholder="Add a new task...">
-<button class="add-btn" onclick="addNewTask()">ADD</button>
+<div class="controls">
+
+<input id="taskInput" placeholder="Add a task, brainstorm, or plan...">
+
+<button onclick="addTask()">Add Task</button>
+<button onclick="addBrainstorm()">Brainstorm</button>
+<button onclick="addPlan()">Plan</button>
+
 </div>
-</div>
+
 
 <div class="board">
 
-<div class="column" id="todo" ondragover="enableColumnDrop(event)" ondrop="handleCardDrop(event)">
-<h2>TO DO</h2>
+<div class="column" id="todo" ondragover="allowDrop(event)" ondrop="drop(event)">
+<h3>TO DO</h3>
 </div>
 
-<div class="column" id="progress" ondragover="enableColumnDrop(event)" ondrop="handleCardDrop(event)">
-<h2>IN PROGRESS</h2>
+<div class="column" id="upnext" ondragover="allowDrop(event)" ondrop="drop(event)">
+<h3>UP NEXT</h3>
 </div>
 
-<div class="column" id="review" ondragover="enableColumnDrop(event)" ondrop="handleCardDrop(event)">
-<h2>IN REVIEW</h2>
+<div class="column" id="progress" ondragover="allowDrop(event)" ondrop="drop(event)">
+<h3>IN PROGRESS</h3>
 </div>
 
-<div class="column" id="complete" ondragover="enableColumnDrop(event)" ondrop="handleCardDrop(event)">
-<h2>COMPLETE</h2>
+<div class="column" id="review" ondragover="allowDrop(event)" ondrop="drop(event)">
+<h3>IN REVIEW</h3>
+</div>
+
+<div class="column" id="complete" ondragover="allowDrop(event)" ondrop="drop(event)">
+<h3>COMPLETE</h3>
 </div>
 
 </div>
+
 
 <script>
 
-function enableColumnDrop(ev) {
-    ev.preventDefault();
+function createCard(text,column,id){
+
+const card=document.createElement("div");
+
+card.className="card";
+card.id=id;
+card.draggable=true;
+
+card.ondragstart=drag;
+
+card.innerHTML=`
+<span class="card-text">${text}</span>
+<div class="remove" onclick="removeTask('${id}')">Remove</div>
+`;
+
+document.getElementById(column).appendChild(card);
+
+saveBoard();
+
 }
 
-function startDraggingCard(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
+/* ADD TASK */
+
+function addTask(){
+
+const input=document.getElementById("taskInput");
+
+if(input.value.trim()=="") return;
+
+createCard(input.value,"todo","card-"+Date.now());
+
+input.value="";
+
 }
 
-function handleCardDrop(ev) {
+/* BRAINSTORM */
 
-    ev.preventDefault();
-    const data = ev.dataTransfer.getData("text");
-    const card = document.getElementById(data);
+function addBrainstorm(){
 
-    let target = ev.target;
+const input=document.getElementById("taskInput");
 
-    while (target && !target.classList.contains('column')) {
-        target = target.parentElement;
-    }
+if(input.value.trim()=="") return;
 
-    if (target) {
-        target.appendChild(card);
-        saveBoard();
-    }
+createCard("💡 "+input.value,"todo","card-"+Date.now());
+
+input.value="";
+
 }
 
-function addNewTask() {
+/* PLAN */
 
-    const input = document.getElementById('taskInput');
+function addPlan(){
 
-    if (input.value.trim() === "") return;
+const input=document.getElementById("taskInput");
 
-    const cardId = "card-" + Date.now();
+if(input.value.trim()=="") return;
 
-    createCard(input.value, 'todo', cardId);
+createCard("📌 "+input.value,"upnext","card-"+Date.now());
 
-    input.value = "";
+input.value="";
 
-    saveBoard();
 }
 
-function createCard(text, columnId, cardId) {
+/* REMOVE */
 
-    const card = document.createElement('div');
+function removeTask(id){
 
-    card.className = 'card';
-    card.id = cardId;
-    card.draggable = true;
+document.getElementById(id).remove();
 
-    card.ondragstart = startDraggingCard;
+saveBoard();
 
-    card.innerHTML = `
-        <span class="card-text" contenteditable="true" onblur="saveBoard()">${text}</span>
-        <button class="remove-btn" onclick="removeTask('${cardId}')">Remove</button>
-    `;
-
-    document.getElementById(columnId).appendChild(card);
 }
 
-function removeTask(id) {
+/* DRAG */
 
-    document.getElementById(id).remove();
-    saveBoard();
+function allowDrop(ev){
+ev.preventDefault();
 }
 
-function saveBoard() {
-
-    const columns = ['todo', 'progress', 'review', 'complete'];
-
-    const boardState = {};
-
-    columns.forEach(colId => {
-
-        const column = document.getElementById(colId);
-
-        const cards = column.querySelectorAll('.card');
-
-        boardState[colId] = Array.from(cards).map(card => ({
-
-            id: card.id,
-
-            text: card.querySelector('.card-text').innerText
-
-        }));
-
-    });
-
-    localStorage.setItem('gdgKanbanState', JSON.stringify(boardState));
+function drag(ev){
+ev.dataTransfer.setData("text",ev.target.id);
 }
 
-function loadBoard() {
+function drop(ev){
 
-    const savedState = localStorage.getItem('gdgKanbanState');
+ev.preventDefault();
 
-    if (savedState) {
+const data=ev.dataTransfer.getData("text");
 
-        const boardState = JSON.parse(savedState);
+let target=ev.target;
 
-        Object.keys(boardState).forEach(colId => {
-
-            boardState[colId].forEach(cardData => {
-
-                createCard(cardData.text, colId, cardData.id);
-
-            });
-
-        });
-
-    }
+while(target && !target.classList.contains("column")){
+target=target.parentElement;
 }
 
-window.onload = loadBoard;
+if(target){
+target.appendChild(document.getElementById(data));
+saveBoard();
+}
+
+}
+
+/* SAVE BOARD */
+
+function saveBoard(){
+
+const columns=["todo","upnext","progress","review","complete"];
+
+let data={};
+
+columns.forEach(col=>{
+
+data[col]=[];
+
+document.querySelectorAll(`#${col} .card`).forEach(card=>{
+
+data[col].push(
+card.querySelector(".card-text").innerText
+);
+
+});
+
+});
+
+localStorage.setItem("kanbanData",JSON.stringify(data));
+
+}
+
+/* LOAD BOARD */
+
+function loadBoard(){
+
+const saved=JSON.parse(localStorage.getItem("kanbanData"));
+
+if(!saved) return;
+
+Object.keys(saved).forEach(col=>{
+
+saved[col].forEach(text=>{
+
+createCard(text,col,"card-"+Date.now()+Math.random());
+
+});
+
+});
+
+}
+
+loadBoard();
 
 </script>
 
 </body>
 </html>
+```
