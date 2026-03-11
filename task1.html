@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDG on campus SRM - Pastel Kanban</title>
+
+<style>
+
+:root {
+    --bg-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    --column-bg: rgba(255, 255, 255, 0.45);
+    --text-color: #5d5d81;
+    --card-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+body {
+    background: var(--bg-gradient);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.decor { position: absolute; z-index: -1; pointer-events: none; }
+.rocket { top: 20px; right: 20px; font-size: 60px; transform: rotate(-15deg); }
+.blob-pink { top: -20px; left: -20px; font-size: 100px; opacity: 0.6; }
+.blob-orange { bottom: 20px; left: 20px; font-size: 80px; opacity: 0.5; }
+
+.header {
+    text-align: center;
+    margin-top: 40px;
+    color: var(--text-color);
+}
+
+.header h1 {
+    letter-spacing: 8px;
+    font-size: 2.5rem;
+}
+
+.input-area {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    padding: 12px;
+    border-radius: 25px;
+    border: 1px solid white;
+    width: 250px;
+}
+
+.add-btn {
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.board {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 85%;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.column {
+    background: var(--column-bg);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 20px;
+    width: 250px;
+    min-height: 420px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.column h2 {
+    text-align: center;
+    color: var(--text-color);
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    cursor: grab;
+    border-left: 6px solid #a29bfe;
+}
+.card:hover{
+    transform: translateY(-3px);
+    transition: 0.2s ease;
+}
+
+.card-text {
+    outline: none;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.remove-btn {
+    color: #ff7675;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="decor rocket">🚀</div>
+<div class="decor blob-pink">🎨</div>
+<div class="decor blob-orange">🌪️</div>
+
+<div class="header">
+<h1>KANBAN BOARD</h1>
+
+<div class="input-area">
+<input type="text" id="taskInput" placeholder="Add a new task...">
+<button class="add-btn" onclick="addNewTask()">ADD</button>
+</div>
+</div>
+
+<div class="board">
+
+<div class="column" id="todo" ondragover="enableColumnDrop(event)" ondrop="handleCardDrop(event)">
+<h2>TO DO</h2>
+</div>
+
+<div class="column" id="progress" ondragover="enableColumnDrop(event)" ondrop="handleCardDrop(event)">
+<h2>IN PROGRESS</h2>
+</div>
+
+<div class="column" id="review" ondragover="enableColumnDrop(event)" ondrop="handleCardDrop(event)">
+<h2>IN REVIEW</h2>
+</div>
+
+<div class="column" id="complete" ondragover="enableColumnDrop(event)" ondrop="handleCardDrop(event)">
+<h2>COMPLETE</h2>
+</div>
+
+</div>
+
+<script>
+
+function enableColumnDrop(ev) {
+    ev.preventDefault();
+}
+
+function startDraggingCard(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function handleCardDrop(ev) {
+
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    const card = document.getElementById(data);
+
+    let target = ev.target;
+
+    while (target && !target.classList.contains('column')) {
+        target = target.parentElement;
+    }
+
+    if (target) {
+        target.appendChild(card);
+        saveBoard();
+    }
+}
+
+function addNewTask() {
+
+    const input = document.getElementById('taskInput');
+
+    if (input.value.trim() === "") return;
+
+    const cardId = "card-" + Date.now();
+
+    createCard(input.value, 'todo', cardId);
+
+    input.value = "";
+
+    saveBoard();
+}
+
+function createCard(text, columnId, cardId) {
+
+    const card = document.createElement('div');
+
+    card.className = 'card';
+    card.id = cardId;
+    card.draggable = true;
+
+    card.ondragstart = startDraggingCard;
+
+    card.innerHTML = `
+        <span class="card-text" contenteditable="true" onblur="saveBoard()">${text}</span>
+        <button class="remove-btn" onclick="removeTask('${cardId}')">Remove</button>
+    `;
+
+    document.getElementById(columnId).appendChild(card);
+}
+
+function removeTask(id) {
+
+    document.getElementById(id).remove();
+    saveBoard();
+}
+
+function saveBoard() {
+
+    const columns = ['todo', 'progress', 'review', 'complete'];
+
+    const boardState = {};
+
+    columns.forEach(colId => {
+
+        const column = document.getElementById(colId);
+
+        const cards = column.querySelectorAll('.card');
+
+        boardState[colId] = Array.from(cards).map(card => ({
+
+            id: card.id,
+
+            text: card.querySelector('.card-text').innerText
+
+        }));
+
+    });
+
+    localStorage.setItem('gdgKanbanState', JSON.stringify(boardState));
+}
+
+function loadBoard() {
+
+    const savedState = localStorage.getItem('gdgKanbanState');
+
+    if (savedState) {
+
+        const boardState = JSON.parse(savedState);
+
+        Object.keys(boardState).forEach(colId => {
+
+            boardState[colId].forEach(cardData => {
+
+                createCard(cardData.text, colId, cardData.id);
+
+            });
+
+        });
+
+    }
+}
+
+window.onload = loadBoard;
+
+</script>
+
+</body>
+</html>
