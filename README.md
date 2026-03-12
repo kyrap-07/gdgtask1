@@ -38,3 +38,5 @@ This is a single page Kanban board application developed for GDG on Campus SRM r
 
 ![Remove a task](Screenshot(198).png)
 
+LIVE DEMO:
+https://kyrap-07.github.io/gdgtask1/
